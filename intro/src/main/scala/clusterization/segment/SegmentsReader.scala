@@ -5,7 +5,6 @@ import clusterization.IPAddress
 import scala.collection.Iterator
 
 /**
-  *
   * @author Alexey Poptsov
   */
 trait SegmentsReader {

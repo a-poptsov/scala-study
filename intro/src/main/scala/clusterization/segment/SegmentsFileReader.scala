@@ -3,7 +3,6 @@ package clusterization.segment
 import scala.io.Source
 
 /**
-  *
   * @author Alexey Poptsov
   */
 object SegmentsFileReader extends SegmentsReader {

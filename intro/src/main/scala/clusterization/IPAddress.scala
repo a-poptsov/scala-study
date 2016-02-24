@@ -15,7 +15,6 @@ class IPAddress(val ip: Long) {
 
   override def toString = parts.mkString(".")
 
-  def value: Long = IPAddress(parts)
 }
 
 object IPAddress {
