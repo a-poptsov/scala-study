@@ -1,6 +1,7 @@
 package clusterization.service.formatter
 
 /**
+  * Default implementation of clusterization formatter
   *
   * @author Alexey Poptsov
   */

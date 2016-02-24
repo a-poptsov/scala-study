@@ -1,6 +1,8 @@
 package clusterization.model
 
 /**
+  * Entity to work with ip address info
+  *
   * @author Alexey Poptsov
   */
 class IpAddress(val ip: Long) {
@@ -12,12 +14,21 @@ class IpAddress(val ip: Long) {
 
   override def toString = parts.mkString(".")
 
-  def part(id: Int): Long = {
-    if (id >= 0 && id <= 3) parts(id) else throw new IllegalArgumentException("ip4 contains only 4 parts")
+  /**
+    * Return the part of ip4 address
+    *
+    * @param index - index of a part(1 to 4)
+    * @return
+    */
+  def part(index: Int): Long = {
+    if (index >= 1 && index <= 4) parts(index + 1) else throw new IllegalArgumentException("ip4 contains only 4 parts")
   }
 
 }
 
+/**
+  * Helper to create ip address
+  */
 object IpAddress {
   val partsModifiers: Array[Long] = Array(1000000000L, 1000000L, 1000L, 1L)
 
