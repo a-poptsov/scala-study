@@ -8,7 +8,7 @@ import org.scalatest._
   */
 class IpAddressTest extends FlatSpec with Matchers {
 
-  "A Address" should "be defined by number" in {
+  "An Address" should "be defined by number" in {
     val value = 100101102103L
     val address = IpAddress(value)
 
@@ -20,7 +20,7 @@ class IpAddressTest extends FlatSpec with Matchers {
     address.part(4) should be(103L)
   }
 
-  "A Address" should "be defined by string" in {
+  "An Address" should "be defined by string" in {
     val address = IpAddress("200.201.202.203")
 
     address.ip should be(200201202203L)
@@ -31,7 +31,7 @@ class IpAddressTest extends FlatSpec with Matchers {
     address.part(4) should be(203L)
   }
 
-  "A Address" should "be defined by array" in {
+  "An Address" should "be defined by array" in {
     val address = IpAddress(Array(250L, 251L, 252L, 253L))
 
     address.ip should be(250251252253L)
@@ -42,7 +42,7 @@ class IpAddressTest extends FlatSpec with Matchers {
     address.part(4) should be(253L)
   }
 
-  "A Address" should "be validate input" in {
+  "An Address" should "be validate input" in {
     an [IllegalArgumentException] should be thrownBy  IpAddress(Array(255L, 255L, 255L, 256L))
     an [IllegalArgumentException] should be thrownBy  IpAddress(Array(255L, 255L, -1L, 255L))
   }
