@@ -3,6 +3,9 @@ import java.io.PrintWriter
 import clusterization.IPAddress
 import clusterization.segment._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Future, Await}
 import scala.io.Source
 
 /**
@@ -22,14 +25,13 @@ object ClusterizationApp extends App {
   startTime = System.currentTimeMillis()
 
   val out = new PrintWriter(outputPath)
-  for (transaction <- Source.fromFile(transactionsPath, "UTF-8").getLines()) {
-    //TODO think about working with thread pool here
+  Await.ready(Future.sequence(Source.fromFile(transactionsPath, "UTF-8").getLines().map(transaction => Future({
     val transactionId: String = transaction.replaceFirst("\\s+\\S+", "").trim
     val transactionIp: IPAddress = new IPAddress(transaction.replaceFirst(".+\\s+", "").trim)
-    for (segment <- segments.findMatchedWithoutIndex(transactionIp)) {
+    for (segment <- segments.findMatched(transactionIp)) {
       out.println(transactionId + "\t" + segment.segmentName)
     }
-  }
+  }))), Duration.Inf)
   out.close()
 
   println("Clusterization takes " + (System.currentTimeMillis() - startTime) + " milli seconds")

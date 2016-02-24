@@ -10,11 +10,9 @@ import scala.collection.immutable.TreeMap
   */
 class SegmentStorage(val data: Array[Segment]) {
 
-//TODO use multi map here
-  val index:TreeMap[Long, Segment] = TreeMap(data.map{ s => s.start.ip -> s }: _*)
+  val index: TreeMap[Long, Array[Segment]] = TreeMap(data.groupBy(_.start.ip).map({ case (ip, segments) => (ip, segments) }).toArray: _*)
 
-  def findMatched(address: IPAddress): Iterable[Segment] = index.until(address.ip+1).values.filter(_.contains(address))
-  def findMatchedWithoutIndex(address: IPAddress): Iterable[Segment] = data.filter(_.contains(address))
+  def findMatched(address: IPAddress, useIndex : Boolean = true): Iterable[Segment] = (if (useIndex) index.until(address.ip + 1).values.flatten else data.toIterable).filter(_.contains(address))
 
 }
 
