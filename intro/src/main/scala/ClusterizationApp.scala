@@ -1,41 +1,40 @@
 import java.io.PrintWriter
 
-import clusterization.IPAddress
-import clusterization.segment._
+import clusterization.model.IpAddress
+import clusterization.repository.input.segment.SegmentsFileRepository
+import clusterization.repository.input.transaction.TransactionFileRepository
+import clusterization.repository.output.ClusterRepository
+import clusterization.service.formatter.DefaultClusterisationFormatter
+import clusterization.service.{TimeTracker, SegmentStorage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import scala.io.Source
 
 /**
   * @author Alexey Poptsov
   */
 object ClusterizationApp extends App {
 
-  var startTime = System.currentTimeMillis()
+  var argsDefined = args.length == 3
+  if(!argsDefined) {
+    println("Default params(ranges.tsv, transactions.tsv, output.tsv) will be used!")
+  }
+  val segmentsPath = if (argsDefined) args(0) else "ranges.tsv"
+  val transactionsPath = if (argsDefined) args(1) else "transactions.tsv"
+  val outputPath = if (argsDefined) args(2) else "output.tsv"
 
-  var argsDefined: Boolean = args.length == 3
-  val segmentsPath: String = if (argsDefined) args(0) else "ranges.tsv"
-  val transactionsPath: String = if (argsDefined) args(1) else "transactions.tsv"
-  val outputPath: String = if (argsDefined) args(2) else "output.tsv"
-  val segments: SegmentStorage = SegmentStorage(SegmentsFileReader(segmentsPath))
+  val segments: SegmentStorage = TimeTracker(SegmentStorage(SegmentsFileRepository(segmentsPath)), "Initialization takes")
 
-  println("Initialization takes " + (System.currentTimeMillis() - startTime) + " milliseconds")
-  startTime = System.currentTimeMillis()
-
-  val out = new PrintWriter(outputPath)
-  Await.ready(Future.sequence(Source.fromFile(transactionsPath, "UTF-8").getLines.grouped(100)
-    .map(transactions => Future({
-      for (transaction <- transactions) {
-        val transactionId: String = transaction.replaceFirst("\\s+\\S+", "").trim
-        val transactionIp: IPAddress = new IPAddress(transaction.replaceFirst(".+\\s+", "").trim)
-        for (segment <- segments.findMatched(transactionIp)) {
-          out.println(transactionId + "\t" + segment.segmentName)
-        }
+  val repository = new ClusterRepository(outputPath)
+  TimeTracker(Await.ready(Future.sequence(TransactionFileRepository.read(transactionsPath, process)), Duration.Inf), "Clusterization takes")
+  def process(transactions :Seq[String]) : Future[Unit] = Future({
+    transactions.foreach(transactionStr => {
+      val transaction = TransactionFileRepository.parse(transactionStr)
+      for (segment <- segments.findMatched(transaction.transactionIp)) {
+        repository.write(DefaultClusterisationFormatter.format(transaction.transactionId, segment.segmentName))
       }
-    }))), Duration.Inf)
-  out.close()
-
-  println("Clusterization takes " + (System.currentTimeMillis() - startTime) + " milliseconds")
+    })
+  })
+  repository.close()
 }
