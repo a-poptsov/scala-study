@@ -1,5 +1,6 @@
 import java.io.PrintWriter
 
+import clusterization.IPAddress
 import clusterization.segment._
 
 import scala.io.Source
