@@ -21,7 +21,7 @@ class IpAddress(val ip: Long) {
     * @return
     */
   def part(index: Int): Long = {
-    if (index >= 1 && index <= 4) parts(index + 1) else throw new IllegalArgumentException("ip4 contains only 4 parts")
+    if (index >= 1 && index <= 4) parts(index - 1) else throw new IllegalArgumentException("ip4 contains only 4 parts")
   }
 
 }
