@@ -1,5 +1,7 @@
 package clusterization.segment
 
+import clusterization.IPAddress
+
 /**
   * TODO implement this as tree
   *

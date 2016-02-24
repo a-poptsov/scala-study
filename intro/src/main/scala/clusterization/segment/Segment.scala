@@ -1,5 +1,7 @@
 package clusterization.segment
 
+import clusterization.IPAddress
+
 /**
   *
   * @author Alexey Poptsov
