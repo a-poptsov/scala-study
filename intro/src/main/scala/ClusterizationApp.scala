@@ -21,7 +21,7 @@ object ClusterizationApp extends App {
   val outputPath: String = if (argsDefined) args(2) else "output.tsv"
   val segments: SegmentStorage = SegmentStorage(SegmentsFileReader(segmentsPath))
 
-  println("Initialization takes " + (System.currentTimeMillis() - startTime) + " milli seconds")
+  println("Initialization takes " + (System.currentTimeMillis() - startTime) + " milliseconds")
   startTime = System.currentTimeMillis()
 
   val out = new PrintWriter(outputPath)
@@ -34,5 +34,5 @@ object ClusterizationApp extends App {
   }))), Duration.Inf)
   out.close()
 
-  println("Clusterization takes " + (System.currentTimeMillis() - startTime) + " milli seconds")
+  println("Clusterization takes " + (System.currentTimeMillis() - startTime) + " milliseconds")
 }
