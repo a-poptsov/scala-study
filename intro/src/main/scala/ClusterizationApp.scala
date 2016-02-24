@@ -1,5 +1,3 @@
-package clusterization
-
 import java.io.PrintWriter
 
 import clusterization.segment._

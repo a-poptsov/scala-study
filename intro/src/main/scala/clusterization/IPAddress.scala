@@ -1,4 +1,4 @@
-package clusterization.segment
+package clusterization
 
 /**
   * @author Alexey Poptsov
