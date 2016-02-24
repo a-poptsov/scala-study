@@ -5,7 +5,7 @@ import org.scalatest._
 /**
   * @author Alexey Poptsov
   */
-class DefaultClusterisationFormatter$Test extends FlatSpec with Matchers {
+class DefaultClusterisationFormatterTest extends FlatSpec with Matchers {
 
   "A Formatter" should "separate transaction and segment using \\t" in {
     val formatter = DefaultClusterisationFormatter

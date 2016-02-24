@@ -1,4 +1,4 @@
-import clusterization.repository.input.segment.SegmentFileRepository$
+import clusterization.repository.input.segment.SegmentFileRepository
 import clusterization.repository.input.transaction.TransactionFileRepository
 import clusterization.repository.output.FileRepository
 import clusterization.service.formatter.DefaultClusterisationFormatter
@@ -26,7 +26,7 @@ object ClusterizationApp extends App {
   val transactionsPath = if (argsDefined) args(1) else "transactions.tsv"
   val outputPath = if (argsDefined) args(2) else "output.tsv"
 
-  val segments: SegmentStorage = TimeTracker(SegmentStorage(SegmentFileRepository$(segmentsPath)), "Initialization takes")
+  val segments: SegmentStorage = TimeTracker(SegmentStorage(SegmentFileRepository(segmentsPath)), "Initialization takes")
 
   val repository = new FileRepository(outputPath)
   TimeTracker(Await.ready(Future.sequence(TransactionFileRepository.read(transactionsPath, process)), Duration.Inf), "Clusterization takes")

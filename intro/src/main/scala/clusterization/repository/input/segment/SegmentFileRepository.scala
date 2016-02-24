@@ -9,7 +9,7 @@ import scala.io.Source
   *
   * @author Alexey Poptsov
   */
-object SegmentFileRepository$ extends SegmentRepository {
+object SegmentFileRepository extends SegmentRepository {
 
   override def open(path: String): Iterator[String] = Source.fromFile(path, "UTF-8").getLines()
 

@@ -11,8 +11,6 @@ object TransactionFileRepository extends TransactionRepository {
 
   private val encoding = "UTF-8"
 
-
   override def open(path: String): Iterator[String] = Source.fromFile(path, encoding).getLines
-
 
 }
