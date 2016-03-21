@@ -11,8 +11,8 @@ class SegmentStorageTest extends FlatSpec with Matchers {
 
   "A Storage" should "work with empty data" in {
     val storage = SegmentStorage(Array())
-    storage.findMatched(IpAddress("0.0.0.0")).toList.length should be(0)
-    storage.findMatched(IpAddress("0.0.0.0"), useIndex = false).toList.length should be(0)
+    storage.search(IpAddress("0.0.0.0")).toList.length should be(0)
+    storage.fullScan(IpAddress("0.0.0.0")).toList.length should be(0)
   }
 
   "A Storage" should "be able to find correct segments" in {
@@ -25,7 +25,7 @@ class SegmentStorageTest extends FlatSpec with Matchers {
 
     val storage = SegmentStorage(Array(segment1, segment2))
 
-    val result = storage.findMatched(IpAddress("0.0.0.0"))
+    val result = storage.search(IpAddress("0.0.0.0"))
     result should be(Array(segment1))
   }
 
@@ -39,8 +39,8 @@ class SegmentStorageTest extends FlatSpec with Matchers {
 
     val storage = SegmentStorage(Array(segment1, segment2))
 
-    val resultWithIndex = storage.findMatched(IpAddress("125.0.0.0"), useIndex = true)
-    val resultWithoutIndex = storage.findMatched(IpAddress("125.0.0.0"), useIndex = false)
+    val resultWithIndex = storage.search(IpAddress("125.0.0.0"))
+    val resultWithoutIndex = storage.fullScan(IpAddress("125.0.0.0"))
 
     resultWithIndex should be(resultWithoutIndex)
   }
@@ -55,7 +55,7 @@ class SegmentStorageTest extends FlatSpec with Matchers {
 
     val storage = SegmentStorage(Array(segment1, segment2))
 
-    val result = storage.findMatched(IpAddress("125.0.0.0"), useIndex = true)
+    val result = storage.search(IpAddress("125.0.0.0"))
     result.toSet should be(Set(segment1, segment2))
   }
 

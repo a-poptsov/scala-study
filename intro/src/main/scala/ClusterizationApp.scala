@@ -34,7 +34,7 @@ object ClusterizationApp extends App {
   def process(transactions: Seq[String]): Future[Unit] = Future({
     transactions.foreach(transactionStr => {
       val transaction = TransactionFileRepository.parse(transactionStr)
-      for (segment <- segments.findMatched(transaction.transactionIp)) {
+      for (segment <- segments.search(transaction.transactionIp)) {
         repository.write(DefaultClusterisationFormatter.format(transaction.transactionId, segment.segmentName))
       }
     })

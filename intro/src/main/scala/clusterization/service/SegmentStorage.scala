@@ -3,7 +3,6 @@ package clusterization.service
 import clusterization.model.{IpAddress, IpSegment}
 
 import scala.collection.Iterable
-import scala.collection.immutable.TreeMap
 
 /**
   * Service that store information about segments
@@ -12,16 +11,29 @@ import scala.collection.immutable.TreeMap
   */
 class SegmentStorage(val data: Array[IpSegment]) {
 
-  val index: TreeMap[Long, Array[IpSegment]] = TreeMap(data.groupBy(_.start.ip).map({ case (ip, segments) => (ip, segments) }).toArray: _*)
+  val index: List[List[List[IpSegment]]] = data.toList.groupBy(_.start.ip).values.toList
+    .map(_.groupBy(_.end.ip).values.toList.sortWith(_.head.end.ip < _.head.end.ip))
+    .sortWith(_.head.head.start.ip < _.head.head.start.ip)
 
   /**
     * Find segments that contain provided ip address
+    * use full data scan algorithm
     *
     * @param address  - criteria to find segments
-    * @param useIndex - define an algorithm of searching segments
     * @return matched segments
     */
-  def findMatched(address: IpAddress, useIndex: Boolean = true): Iterable[IpSegment] = (if (useIndex) index.until(address.ip + 1).values.flatten else data.toIterable).filter(_.contains(address))
+  def fullScan(address: IpAddress): Iterable[IpSegment] = data.toIterable.filter(_.contains(address))
+
+  /**
+    * Find segments that contain provided ip address
+    * use index during scan
+    *
+    * @param address  - criteria to find segments
+    * @return matched segments
+    */
+  def search(address: IpAddress): Iterable[IpSegment] = {
+    index.takeWhile(_.head.head.start.ip <= address.ip).flatMap(_.filter(_.head.end.ip > address.ip).flatten)
+  }
 
 }
 
